@@ -51,7 +51,16 @@
   </div>
 
   <div class="row">
-
+  <table class="table table-striped table-hover ">
+        <tbody>
+  <tr><th>OS</th><td><%= os[:family]%></td></tr>
+  <tr><th>Release</th><td><%= os[:release]%></td></tr>
+  <tr><th>Arch</th><td><%= os[:arch]%></td></tr>
+  <tr><th>Cloud</th><td><%= ENV['CLOUD_ENV']%></td></tr>
+  <tr><th>Target</th><td><%= ENV['TARGET_HOST']%></td></tr>
+  </tbody>
+  </table>
+  
     <div class="col-md-4">
       <div class="panel panel-default">
 
@@ -61,7 +70,6 @@
           <canvas id="pieChart" width="300" height="300"></canvas>
         </div>
       </div>
-
     </div>
 
   <div class="row">
@@ -111,7 +119,7 @@
   var pieChart = new Chart(pieCtx, {
     type: 'doughnut',
     data: {
-        labels: ["Passed", "Failed", "Pending"],
+        labels: ["Passed (<%= @passed %>)", "Failed (<%= @failed %>)", "Pending (<%= @pending %>)"],
         datasets: [{
           label: 'Examples',
           data: [<%= @passed %>, <%= @failed %>, <%= @pending %>],
@@ -132,6 +140,6 @@
   });
 
 </script>
-
+<author>This version by: Nicholas Cross @mohclips - originally @vbanthia and before that @kingsleyh</author>
 </body>
 </html>

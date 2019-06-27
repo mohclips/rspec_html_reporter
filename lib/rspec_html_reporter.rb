@@ -18,7 +18,7 @@ class Oopsy
     @file_path = file_path
     unless @exception.nil?
       @klass = @exception.class
-      @message = @exception.message.encode('utf-8')
+      @message = @exception.message.force_encoding("utf-8") #.encode('utf-8') # CrossN
       @backtrace = @exception.backtrace
       @backtrace_message = formatted_backtrace(@example, @exception)
       @highlighted_source = process_source
@@ -118,6 +118,18 @@ class Example
     @screenshots = @metadata[:screenshots]
     @screenrecord = @metadata[:screenrecord]
     @failed_screenshot = @metadata[:failed_screenshot]
+    #CrossN
+    @skip = example.skip
+    @pending_message = @execution_result.pending_message # ? @execution_result.pending_message : ''
+  end
+
+  #CrossN
+  def has_skip?
+    !@skip.nil?
+  end
+
+  def skipped_message
+    @pending_message
   end
 
   def example_title
