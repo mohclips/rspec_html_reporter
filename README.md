@@ -17,6 +17,11 @@ My updates - June 2019
 
 I updated this to help display CIS tests on images built in various cloud environments
 
+## Examples
+
+![](images/example_report1.png)
+![](images/example_report2a.png)
+![](images/example_report2b.png)
 
 ## Setup
 
