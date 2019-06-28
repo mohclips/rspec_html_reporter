@@ -15,6 +15,10 @@ My updates - June 2019
 * Graph shows count per example in labels
 * Fix bug with UTF-8
 
+* Better display of example titles
+* Allow checkbox on/off of example statuses in reports
+
+
 I updated this to help display CIS tests on images built in various cloud environments
 
 ## Examples
