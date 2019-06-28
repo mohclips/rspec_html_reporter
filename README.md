@@ -19,9 +19,7 @@ I updated this to help display CIS tests on images built in various cloud enviro
 
 ## Examples
 
-![](images/example_report1.png)
-![](images/example_report2a.png)
-![](images/example_report2b.png)
+<a href=images/example_report1.PNG><img src=images/example_report1.PNG width=33%></a>  <a href=images/example_report2a.PNG><img src=images/example_report2a.PNG width=33%></a>  <a href=images/example_report2b.PNG><img src=images/example_report2b.PNG width=33%></a>
 
 ## Setup
 
