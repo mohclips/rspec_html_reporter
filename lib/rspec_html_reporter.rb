@@ -7,7 +7,92 @@ require 'rouge'
 require 'erb'
 require 'rbconfig'
 
+require 'pp' # pretty print
+
 I18n.enforce_available_locales = false
+
+#
+# Monkey Patch
+#
+module RSpec
+  module Core
+    module ExampleGroups
+      extend Support::RecursiveConstMethods
+
+      def self.assign_const(group)
+        base_name   = base_name_for(group)
+        const_scope = constant_scope_for(group)
+        name        = disambiguate(base_name, const_scope)
+        const_scope.const_set(name, group)
+      end
+  
+      def self.constant_scope_for(group)
+        const_scope = group.superclass
+        const_scope = self if const_scope == ::RSpec::Core::ExampleGroup
+        const_scope
+      end
+  
+      def self.remove_all_constants
+        constants.each do |constant|
+          __send__(:remove_const, constant)
+        end
+      end
+  
+      def self.base_name_for(group) 
+        #NOTE: CrossN
+        #
+        # MonkeyPatched to get nicer names in the display
+        #
+        return "Anonymous".dup if group.description.empty?
+
+        # Convert to CamelCase.
+        name = ' ' + group.description
+        # name.gsub!(/[^0-9a-zA-Z]+([0-9a-zA-Z])/) do
+        #   match = ::Regexp.last_match[1]
+        #   match.upcase!
+        #   match
+        # end
+  
+        # My Not_So_Camel_Case
+        #name = name.split(' ').map{|w| w.sub(/^./, &:upcase)}.join('_')
+        name = name.split(' ').join('_')
+  
+        name.lstrip!                # Remove leading whitespace
+        #name.gsub!(/\W/, ''.freeze) # JRuby, RBX and others don't like non-ascii in const names
+        name.gsub!(/\W/, '_'.freeze) # My non-ascii replacement
+
+        # Ruby requires first const letter to be A-Z. Use `Nested`
+        # as necessary to enforce that.
+        name.gsub!(/\A([^A-Z]|\z)/, 'Nested\1'.freeze)
+  
+        name
+      end
+  
+      if RUBY_VERSION == '1.9.2'
+        # :nocov:
+        class << self
+          alias _base_name_for base_name_for
+          def base_name_for(group)
+            _base_name_for(group) + '_'
+          end
+        end
+        private_class_method :_base_name_for
+        # :nocov:
+      end
+  
+      def self.disambiguate(name, const_scope)
+        return name unless const_defined_on?(const_scope, name)
+  
+        # Add a trailing number if needed to disambiguate from an existing
+        # constant.
+        name << "_2"
+        name.next! while const_defined_on?(const_scope, name)
+        name
+      end
+    end
+  end
+end
+## End MonkeyPatch
 
 class Oopsy
   attr_reader :klass, :message, :backtrace, :highlighted_source, :explanation, :backtrace_message
@@ -133,10 +218,17 @@ class Example
   end
 
   def example_title
-    title_arr = @example_group.to_s.split('::') - ['RSpec', 'ExampleGroups']
-    title_arr.push @description
+    # title_arr = @example_group.to_s.split('::') - ['RSpec', 'ExampleGroups']
 
-    title_arr.join(' → ')
+    # # Remove 'Nested' from the description
+    # title_arr.reject!{|e| e== 'Nested'}
+    # title_arr.map!{|s| s.gsub(/Nested/, '')}
+    # title_arr.map!{|s| s.gsub(/_/, ' ')}
+
+    # title_arr.push @full_description
+    # title_arr.join(' → ')
+
+    @full_description
   end
 
   def has_exception?
@@ -193,7 +285,7 @@ class RspecHtmlReporter < RSpec::Core::Formatters::BaseFormatter
     @group_level = 0
   end
 
-  def example_group_started(notification)
+  def example_group_started(notification) # NOTE: this is not registered/called
     if @group_level == 0
       @example_group = {}
       @examples = []
@@ -201,9 +293,11 @@ class RspecHtmlReporter < RSpec::Core::Formatters::BaseFormatter
       @group_example_success_count = 0
       @group_example_failure_count = 0
       @group_example_pending_count = 0
+      #@example_description = []
     end
 
     @group_level += 1
+
   end
 
   def example_started(notification)
@@ -211,16 +305,19 @@ class RspecHtmlReporter < RSpec::Core::Formatters::BaseFormatter
   end
 
   def example_passed(notification)
+    print "*"
     @group_example_success_count += 1
     @examples << Example.new(notification.example)
   end
 
   def example_failed(notification)
+    print "F"
     @group_example_failure_count += 1
     @examples << Example.new(notification.example)
   end
 
   def example_pending(notification)
+    print "."
     @group_example_pending_count += 1
     @examples << Example.new(notification.example)
   end
@@ -243,7 +340,7 @@ class RspecHtmlReporter < RSpec::Core::Formatters::BaseFormatter
           duration_keys = duration_keys << 1
         end
 
-        @title = notification.group.description
+        @title = notification.group.description # used in html template
         @durations = duration_keys.zip(duration_values)
 
         @summary_duration = duration_values.inject(0) { |sum, i| sum + i }.to_s(:rounded, precision: 5)
@@ -292,6 +389,8 @@ class RspecHtmlReporter < RSpec::Core::Formatters::BaseFormatter
       template_file = File.read(File.dirname(__FILE__) + '/../templates/overview.erb')
       f.puts ERB.new(template_file).result(binding)
     end
+
+    puts "\ndone"
   end
 
   private

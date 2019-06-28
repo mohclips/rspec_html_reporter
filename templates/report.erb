@@ -58,7 +58,23 @@
     </div>
   </div>
   <p class="text-center" style="font-size:2em;"><%= @title %></p>
-
+  <script>
+  function toggleRuleDisplay(cb) {
+  
+    console.log(cb)
+    var rules = 'span.label-'+cb.value;
+    var status= cb.checked;
+  
+    console.log(rules);
+    console.log(status);
+  
+    if (status) {
+      $(rules).closest('tr').show();
+    } else {
+      $(rules).closest('tr').hide();
+    }
+  }
+  </script>
   <div class="row">
     <div class="col-lg-12">
       <div class="col-md-4">
@@ -71,6 +87,19 @@
           </div>
         </div>
       </div>
+
+      <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">Filter rules by their result</div>
+          <div class="panel-body">
+            <div class="checkbox"><label><input class="toggle-rule-display" type="checkbox" onclick="toggleRuleDisplay(this)" checked="" value="success">pass</label></div>
+            <div class="checkbox"><label><input class="toggle-rule-display" type="checkbox" onclick="toggleRuleDisplay(this)" checked="" value="warning">pending</label></div>
+            <div class="checkbox"><label><input class="toggle-rule-display" type="checkbox" onclick="toggleRuleDisplay(this)" checked="" value="danger">failed</label></div></div>
+          </div>
+        </div>
+      </div>
+      </div>
+
     </div>
 
     <div class="col-lg-12">
@@ -91,7 +120,7 @@
                 <div>
                       <div class="panel <%= example.klass('panel-') %>">
                         <div class="panel-heading">
-                          <h3 class="panel-title pull-left"> <%= example.example_title %></h3>
+                          <h3 class="panel-title pull-left"> <%= example.example_title.gsub!(/^#{@title} /,'') %></h3>
                           <% if example.has_screenrecord? %>
                             <a href="#example_<%= i+1 %>" class="btn btn-xs btn-default spacer pull-right" onclick="toggler('screenrecord_<%= i+1 %>');">Screen Record</a>
                           <% end %>
