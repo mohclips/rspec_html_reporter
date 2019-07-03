@@ -28,6 +28,13 @@
         margin-left: 10px;
       }
       <%= Rouge::Themes::Github.render(:scope => '.highlight') %>
+
+button.toggle_error {
+  width:20px;
+  float: right;
+  border:1px black solid;
+  color: black;
+}
   </style>
 </head>
 <body>
@@ -69,6 +76,16 @@
       $(rules).closest('tr').show();
     } else {
       $(rules).closest('tr').hide();
+    }
+  }
+  function toggleErrorDisplay(b) {
+    var status=$(b).text();
+    if (status == '-') {
+      $(b).parent().next().show();
+      $(b).text('+');
+    } else {
+      $(b).parent().next().hide();
+      $(b).text('-');
     }
   }
   </script>
@@ -117,7 +134,7 @@
                 <div>
                       <div class="panel <%= example.klass('panel-') %>">
                         <div class="panel-heading">
-                          <h3 class="panel-title pull-left"> <%= example.example_title.gsub!(/^#{@title} /,'') %></h3>
+                        <h3 class="panel-title pull-left"> <%= example.example_title.gsub!(/^#{@title} /,'') %></h3>
                           <% if example.has_screenrecord? %>
                             <a href="#example_<%= i+1 %>" class="btn btn-xs btn-default spacer pull-right" onclick="toggler('screenrecord_<%= i+1 %>');">Screen Record</a>
                           <% end %>
@@ -175,6 +192,7 @@
                   <% if example.has_exception? %>
                       <div class="panel panel-danger">
                         <div class="panel-heading">
+                        <button class='toggle_error' onclick="toggleErrorDisplay(this)">+</button>  
                           <h3 class="panel-title"><%= example.exception.klass %></h3>
                         </div>
                         <div class="panel-body">
