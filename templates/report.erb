@@ -49,6 +49,9 @@
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
+                <li><a href="..">&#128194;</a></li>
+              </ul>
+              <ul class="nav navbar-nav">
                 <li><a href="overview.html">Overview</a></li>
               </ul>
             </div>
@@ -60,14 +63,8 @@
   <p class="text-center" style="font-size:2em;"><%= @title %></p>
   <script>
   function toggleRuleDisplay(cb) {
-  
-    console.log(cb)
     var rules = 'span.label-'+cb.value;
     var status= cb.checked;
-  
-    console.log(rules);
-    console.log(status);
-  
     if (status) {
       $(rules).closest('tr').show();
     } else {
