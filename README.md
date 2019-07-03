@@ -6,7 +6,11 @@ This is a ruby RSpec custom formatter which generates pretty html reports showin
 
 # New Updates
 
-My updates - June 2019
+## My updates 
+July 2019
+* Toggle spec details 
+
+June 2019
 * Added skip description
 * Added group description
 * Added OS details on overview page 
