@@ -42,7 +42,6 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <p class="text-center" style="font-size:2em;">Overview</p>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
@@ -55,18 +54,10 @@
       </div>
     </div>
   </div>
+  <p class="text-center" style="font-size:2em;">Overview</p>
+  <!-- TODO:  Add summary/description text here -->
 
   <div class="row">
-  <table class="table table-striped table-hover ">
-        <tbody>
-  <tr><th>OS</th><td><%= os[:family]%></td></tr>
-  <tr><th>Release</th><td><%= os[:release]%></td></tr>
-  <tr><th>Arch</th><td><%= os[:arch]%></td></tr>
-  <tr><th>Cloud</th><td><%= ENV['CLOUD_ENV']%></td></tr>
-  <tr><th>Target</th><td><%= ENV['TARGET_HOST']%></td></tr>
-  </tbody>
-  </table>
-  
     <div class="col-md-4">
       <div class="panel panel-default">
 
@@ -76,6 +67,48 @@
           <canvas id="pieChart" width="300" height="300"></canvas>
         </div>
       </div>
+    </div>
+
+    <!-- TODO: make this only appear if os[:family] is defined -->
+    <div class="col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">OS Description</div>
+        <div class="panel-body">
+          <table class="table table-striped table-hover ">
+          <tbody>
+          <tr><th>OS</th><td><%= os[:family]%></td></tr>
+          <tr><th>Release</th><td><%= os[:release]%></td></tr>
+          <tr><th>Arch</th><td><%= os[:arch]%></td></tr>
+          <tr><th>Cloud</th><td><%= ENV['CLOUD_ENV']%></td></tr>
+          <tr><th>Target</th><td><%= ENV['TARGET_HOST']%></td></tr>
+          </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    function toggleRuleDisplay(cb) {
+      var rules = 'span.label-'+cb.value;
+      var status= cb.checked;
+      if (status) {
+        $(rules).closest('tr').show();
+      } else {
+        $(rules).closest('tr').hide();
+      }
+    }
+    </script>
+
+    <div class="col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">Filter groups by their status</div>
+        <div class="panel-body">
+          <div class="checkbox"><label><input class="toggle-rule-display" type="checkbox" onclick="toggleRuleDisplay(this)" checked="" value="success">pass</label></div>
+          <div class="checkbox"><label><input class="toggle-rule-display" type="checkbox" onclick="toggleRuleDisplay(this)" checked="" value="warning">pending</label></div>
+          <div class="checkbox"><label><input class="toggle-rule-display" type="checkbox" onclick="toggleRuleDisplay(this)" checked="" value="danger">failed</label></div></div>
+        </div>
+      </div>
+    </div>
     </div>
 
   <div class="row">
@@ -146,6 +179,6 @@
   });
 
 </script>
-<author>This version by: Nicholas Cross @mohclips - originally @vbanthia and before that @kingsleyh</author>
+Rspec HTML Reports <author>This version by: Nicholas Cross @mohclips - originally @vbanthia and before that @kingsleyh</author>
 </body>
 </html>
