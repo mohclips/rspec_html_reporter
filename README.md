@@ -9,6 +9,10 @@ This is a ruby RSpec custom formatter which generates pretty html reports showin
 ## My updates 
 July 2019
 * Toggle spec details 
+* Toggle group status
+* Added Overview Title - RSPEC_HTML_REPORTER_TITLE
+* Added Overview Summary - RSPEC_HTML_REPORTER_SUMMARY
+* Added Execution Date
 
 June 2019
 * Added skip description
