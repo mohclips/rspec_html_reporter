@@ -102,23 +102,24 @@ button.toggle_error {
         </div>
       </div>
 
-      <!-- TODO: make this only appear if os[:family] is defined -->
-      <div class="col-md-4">
-      <div class="panel panel-default">
-        <div class="panel-heading">OS Description</div>
-          <div class="panel-body">
-            <table class="table table-striped table-hover ">
-            <tbody>
-            <tr><th>OS</th><td><%= os[:family]%></td></tr>
-            <tr><th>Release</th><td><%= os[:release]%></td></tr>
-            <tr><th>Arch</th><td><%= os[:arch]%></td></tr>
-            <tr><th>Cloud</th><td><%= ENV['CLOUD_ENV']%></td></tr>
-            <tr><th>Target</th><td><%= ENV['TARGET_HOST']%></td></tr>
-            </tbody>
-            </table>
+      <% if defined?(os) && os[:family] %>
+        <div class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">OS Description</div>
+            <div class="panel-body">
+              <table class="table table-striped table-hover ">
+              <tbody>
+              <tr><th>OS</th><td><%= os[:family]%></td></tr>
+              <tr><th>Release</th><td><%= os[:release]%></td></tr>
+              <tr><th>Arch</th><td><%= os[:arch]%></td></tr>
+              <tr><th>Cloud</th><td><%= ENV['CLOUD_ENV']%></td></tr>
+              <tr><th>Target</th><td><%= ENV['TARGET_HOST']%></td></tr>
+              </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
+      <% end %>
 
 
       <div class="col-md-4">
@@ -212,7 +213,7 @@ button.toggle_error {
                   <% if example.has_exception? %>
                       <div class="panel panel-danger">
                         <div class="panel-heading">
-                        <button class='toggle_error' onclick="toggleErrorDisplay(this)">+</button>  
+                        <button class='toggle_error' onclick="toggleErrorDisplay(this)">+</button>
                           <h3 class="panel-title"><%= example.exception.klass %></h3>
                         </div>
                         <div class="panel-body">
